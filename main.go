@@ -163,11 +163,11 @@ func checkEndpoint(ctx context.Context, ep endpoint, statusc chan result) {
 		}
 	}()
 
-	type xerror error
+	type xerror struct{ error }
 
 	xcheck := func(err error, action string) {
 		if err != nil {
-			panic(xerror(fmt.Errorf("%s: %s", action, err)))
+			panic(xerror{fmt.Errorf("%s: %s", action, err)})
 		}
 	}
 
