@@ -15,7 +15,7 @@ Useful for letting external alerting tools watch your monitoring infrastructure.
 	$ health testconfig health.conf
 	config OK
 
-	$ ./health serve  -address localhost:8100 -monitor-address localhost:8101 health.conf 
+	$ ./health serve -address localhost:8100 -monitor-address localhost:8101 health.conf
 	health version dev, listening on localhost:8100
 	...
 
