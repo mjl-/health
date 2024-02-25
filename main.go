@@ -128,7 +128,7 @@ type result struct {
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "HEAD" {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
