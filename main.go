@@ -25,23 +25,10 @@ var config struct {
 }
 
 var (
-	version       = "dev"
 	vcsCommitHash = ""
 	vcsTag        = ""
 	vcsBranch     = ""
 )
-
-func init() {
-	// Since we set the version variables with ldflags -X, we cannot read them in the vars section.
-	// So we combine them into a CodeVersion during init, and add the handler while we're at it.
-	info := httpinfo.CodeVersion{
-		CommitHash: vcsCommitHash,
-		Tag:        vcsTag,
-		Branch:     vcsBranch,
-		Full:       version,
-	}
-	http.Handle("/info", httpinfo.NewHandler(info, nil))
-}
 
 func check(err error, action string) {
 	if err != nil {
@@ -111,8 +98,19 @@ func serve(args []string) {
 	}
 	parseConfig(args[0])
 
-	healthMux := http.NewServeMux()
 	http.Handle("/metrics", promhttp.Handler())
+
+	// Since we set the version variables with ldflags -X, we cannot read them in the vars section.
+	// So we combine them into a CodeVersion during init, and add the handler while we're at it.
+	info := httpinfo.CodeVersion{
+		CommitHash: vcsCommitHash,
+		Tag:        vcsTag,
+		Branch:     vcsBranch,
+		Full:       version,
+	}
+	http.Handle("/info", httpinfo.NewHandler(info, nil))
+
+	healthMux := http.NewServeMux()
 	healthMux.HandleFunc("/health", health)
 
 	log.Printf("health version %s, listening on %s and monitor %s", version, *address, *monitorAddress)
